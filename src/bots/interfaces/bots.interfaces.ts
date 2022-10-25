@@ -6,7 +6,7 @@ export interface BotRequest {
   upload_outgoing_params: boolean;
   get_context: boolean;
   analyze: boolean;
-  parameters?: string[];
+  parameters: string[];
 }
 
 export interface BotResponse {
