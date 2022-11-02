@@ -18,6 +18,8 @@ export class FiltersService {
     let result = message;
     // Erase 'cmd=&msg='
     result = result.replace('cmd=&msg=', '');
+    // Erase all '&'
+    result = result.replace(/&/g, '');
     return result;
   }
 
