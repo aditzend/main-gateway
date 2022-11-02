@@ -87,7 +87,7 @@ export class BotsService {
       message:
         concordiaMessage.EventName === '*online'
           ? this.wakeUpIntent
-          : concordiaMessage.Message,
+          : this.filtersService.cleanConcordiaMessage(concordiaMessage.Message),
       channel: concordiaMessage.Channel,
       bot_name: concordiaMessage.BotName?.toLowerCase(),
       upload_outgoing_params: true,

@@ -14,6 +14,13 @@ export class FiltersService {
     return firstClean;
   }
 
+  cleanConcordiaMessage(message: string): string {
+    let result = message;
+    // Erase 'cmd=&msg='
+    result = result.replace('cmd=&msg=', '');
+    return result;
+  }
+
   cleanVoicebotMessage(filters: string[], message: string): string {
     let result = message;
     const globalFilters = process.env.GLOBAL_FILTERS.split('|') || null;
