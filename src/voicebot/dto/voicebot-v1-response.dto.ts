@@ -4,6 +4,7 @@ export class VoicebotV1ResponseDto {
   UserName: string;
   Parameters: string[];
   Message: string;
+  EventName: string;
   Channel: string;
   Lang: string;
   Encoding: string;

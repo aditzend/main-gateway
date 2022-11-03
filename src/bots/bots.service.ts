@@ -22,27 +22,24 @@ export class BotsService {
 
   async sendVoicebotMessage(voicebotMessage) {
     const endpoint = `${this.url}/v1/message`;
-    let messageForRasa = ''
+    let messageForRasa = '';
     if (voicebotMessage.EventName === '*online') {
-      messageForRasa = this.wakeUpIntent
+      messageForRasa = this.wakeUpIntent;
     } else {
       const filters = voicebotMessage.Parameters?.filter(
         (param) => param.split('=')[0] === 'filter',
       ).map((param) => param.split('=')[1]);
-    this.logger.verbose(`Filters: ${JSON.stringify(filters)}`);
-
+      this.logger.verbose(`Filters: ${JSON.stringify(filters)}`);
 
       messageForRasa = this.filtersService.cleanVoicebotMessage(
         filters,
         voicebotMessage.Message,
-      )
+      );
     }
-      
 
     const botRequest: BotRequest = {
       sender: voicebotMessage.InteractionId,
-      // TODO: Add message
-      message: ,
+      message: messageForRasa,
       channel: voicebotMessage.Channel,
       bot_name: voicebotMessage.BotName?.toLowerCase(),
       upload_outgoing_params: false,
@@ -62,7 +59,11 @@ export class BotsService {
             InteractionId: data?.recipient_id,
             UserName: voicebotMessage.UserName,
             Parameters: voicebotMessage.Parameters,
-            Message: voicebotMessage.Message,
+            Message:
+              voicebotMessage.Message === ''
+                ? 'online'
+                : voicebotMessage.Message,
+            EventName: voicebotMessage.EventName,
             Lang: voicebotMessage.Lang,
             Encoding: voicebotMessage.Encoding,
             MimeType: voicebotMessage.MimeType,
