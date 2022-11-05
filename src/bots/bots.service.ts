@@ -42,9 +42,9 @@ export class BotsService {
       message: messageForRasa,
       channel: voicebotMessage.Channel,
       bot_name: voicebotMessage.BotName?.toLowerCase(),
-      upload_outgoing_params: false,
+      upload_outgoing_params: true,
       get_context: false,
-      analyze: false,
+      analyze: true,
       parameters: voicebotMessage.Parameters,
     };
 
