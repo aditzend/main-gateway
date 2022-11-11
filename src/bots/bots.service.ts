@@ -24,43 +24,41 @@ export class BotsService {
 
   async sendVoicebotMessage(voicebotMessage: VoicebotV1MessageDto) {
     const endpoint = `${this.url}/v1/message`;
-    let messageForRasa: string;
+    let messageForRasa = '';
     const filters: string[] = [];
     const transformedParameters: Parameter[] = [];
 
     // If voicebotMessage has Parameters, we need to split them by '=' and turn them into Parameters
-    if (voicebotMessage.Parameters) {
-      voicebotMessage.Parameters.forEach((param) => {
-        const [parameter_name, parameter_value] = param.split('=');
-        if (parameter_name === 'filters') filters.push(parameter_value);
-        else
-          transformedParameters.push({
-            parameter_name,
-            parameter_value,
-          });
-      });
-
-      // Tarea should be converted into a Parameter
-      if (voicebotMessage.Tarea) {
+    voicebotMessage.Parameters?.forEach((param) => {
+      const [parameter_name, parameter_value] = param.split('=');
+      if (parameter_name === 'filters') filters.push(parameter_value);
+      else
         transformedParameters.push({
-          parameter_name: 'Tarea',
-          parameter_value: voicebotMessage.Tarea,
+          parameter_name,
+          parameter_value,
         });
-      }
+    });
 
-      if (voicebotMessage.EventName === '*online') {
-        messageForRasa = this.wakeUpIntent;
-      } else {
-        // filters = voicebotMessage.Parameters?.filter(
-        //   (param) => param.split('=')[0] === 'filter',
-        // ).map((param) => param.split('=')[1]);
-        // this.logger.verbose(`Filters: ${JSON.stringify(filters)}`);
+    // Tarea should be converted into a Parameter
+    if (voicebotMessage.Tarea) {
+      transformedParameters.push({
+        parameter_name: 'Tarea',
+        parameter_value: voicebotMessage.Tarea,
+      });
+    }
 
-        messageForRasa = this.filtersService.cleanVoicebotMessage(
-          filters,
-          voicebotMessage.Message,
-        );
-      }
+    if (voicebotMessage.EventName === '*online') {
+      messageForRasa = this.wakeUpIntent;
+    } else {
+      // filters = voicebotMessage.Parameters?.filter(
+      //   (param) => param.split('=')[0] === 'filter',
+      // ).map((param) => param.split('=')[1]);
+      // this.logger.verbose(`Filters: ${JSON.stringify(filters)}`);
+
+      messageForRasa = this.filtersService.cleanVoicebotMessage(
+        filters,
+        voicebotMessage.Message,
+      );
     }
 
     const botRequest: BotRequest = {
