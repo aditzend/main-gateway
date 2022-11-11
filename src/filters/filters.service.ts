@@ -15,7 +15,7 @@ export class FiltersService {
   }
 
   cleanConcordiaMessage(message: string): string {
-    let result = message;
+    let result = message || '';
     // Erase 'cmd=&msg='
     result = result.replace('cmd=&msg=', '');
     // Erase all '&'
