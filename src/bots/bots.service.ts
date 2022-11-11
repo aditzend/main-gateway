@@ -8,6 +8,8 @@ import { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { VoicebotV1MessageDto } from 'src/voicebot/dto/voicebot-v1-message.dto';
 import { VoicebotV1ResponseDto } from 'src/voicebot/dto/voicebot-v1-response.dto';
 import { FiltersService } from 'src/filters/filters.service';
+import { Parameter } from './interfaces/parameter.interface';
+import { Slot } from './interfaces/slot.interface';
 
 @Injectable()
 export class BotsService {
@@ -20,21 +22,45 @@ export class BotsService {
   url = process.env.BOT_API_URL || 'http://192.168.43.169:30048';
   wakeUpIntent = process.env.WAKE_UP_INTENT || '/start';
 
-  async sendVoicebotMessage(voicebotMessage) {
+  async sendVoicebotMessage(voicebotMessage: VoicebotV1MessageDto) {
     const endpoint = `${this.url}/v1/message`;
-    let messageForRasa = '';
-    if (voicebotMessage.EventName === '*online') {
-      messageForRasa = this.wakeUpIntent;
-    } else {
-      const filters = voicebotMessage.Parameters?.filter(
-        (param) => param.split('=')[0] === 'filter',
-      ).map((param) => param.split('=')[1]);
-      this.logger.verbose(`Filters: ${JSON.stringify(filters)}`);
+    let messageForRasa: string;
+    const filters: string[] = [];
+    const transformedParameters: Parameter[] = [];
 
-      messageForRasa = this.filtersService.cleanVoicebotMessage(
-        filters,
-        voicebotMessage.Message,
-      );
+    // If voicebotMessage has Parameters, we need to split them by '=' and turn them into Parameters
+    if (voicebotMessage.Parameters) {
+      voicebotMessage.Parameters.forEach((param) => {
+        const [parameter_name, parameter_value] = param.split('=');
+        if (parameter_name === 'filters') filters.push(parameter_value);
+        else
+          transformedParameters.push({
+            parameter_name,
+            parameter_value,
+          });
+      });
+
+      // Tarea should be converted into a Parameter
+      if (voicebotMessage.Tarea) {
+        transformedParameters.push({
+          parameter_name: 'Tarea',
+          parameter_value: voicebotMessage.Tarea,
+        });
+      }
+
+      if (voicebotMessage.EventName === '*online') {
+        messageForRasa = this.wakeUpIntent;
+      } else {
+        // filters = voicebotMessage.Parameters?.filter(
+        //   (param) => param.split('=')[0] === 'filter',
+        // ).map((param) => param.split('=')[1]);
+        // this.logger.verbose(`Filters: ${JSON.stringify(filters)}`);
+
+        messageForRasa = this.filtersService.cleanVoicebotMessage(
+          filters,
+          voicebotMessage.Message,
+        );
+      }
     }
 
     const botRequest: BotRequest = {
@@ -45,7 +71,7 @@ export class BotsService {
       upload_outgoing_params: true,
       get_context: false,
       analyze: true,
-      parameters: voicebotMessage.Parameters,
+      parameters: transformedParameters,
     };
 
     this.logger.verbose(`Sending message ${JSON.stringify(botRequest)}`);

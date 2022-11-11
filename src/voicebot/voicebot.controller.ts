@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Post, Req } from '@nestjs/common';
+import { Controller, Get, Logger, Post, Req, HttpCode } from '@nestjs/common';
 import { BotsService } from 'src/bots/bots.service';
 import { VoicebotV1MessageDto } from './dto/voicebot-v1-message.dto';
 import { Request } from 'express';
@@ -14,6 +14,7 @@ export class VoicebotController {
     return this.botsService.version();
   }
   @Post()
+  @HttpCode(200)
   botPost(@Req() request: Request) {
     const voicebotMessage: VoicebotV1MessageDto = request.body;
     this.logger.debug(JSON.stringify(voicebotMessage));

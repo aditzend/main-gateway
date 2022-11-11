@@ -1,12 +1,16 @@
+import { Parameter } from './parameter.interface';
+import { Slot } from './slot.interface';
+
 export interface BotRequest {
   sender: string;
   message: string;
-  channel: string;
   bot_name: string;
-  upload_outgoing_params: boolean;
-  get_context: boolean;
-  analyze: boolean;
-  parameters: string[];
+  channel?: string;
+  upload_outgoing_params?: boolean;
+  get_context?: boolean;
+  analyze?: boolean;
+  parameters?: Parameter[];
+  load_slots?: Slot[];
 }
 
 export interface BotResponse {

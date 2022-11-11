@@ -32,7 +32,7 @@ export class FiltersService {
       });
     }
 
-    if (process.env.NUMBER_CONDENSING_ENABLED === 'true') {
+    if (process.env.DISABLE_NUMBER_CONDENSING !== 'true') {
       const asrBugRegex = /\d\s\d/;
       const numberOrSpaceRegex = /\d|\s/;
       const spaceRegex = /\s/;
