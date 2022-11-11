@@ -5,6 +5,14 @@ export class FiltersService {
   logger: Logger = new Logger('FiltersService');
 
   applyFilter(filter: string, message: string): string {
+    if (message === undefined) {
+      this.logger.error('Message is undefined');
+      return message;
+    }
+    if (filter === undefined) {
+      this.logger.error('Filter is undefined');
+      return message;
+    }
     let firstClean = message;
     const [regex, replace] = filter.split('>>>');
     const regexObj = new RegExp(regex, 'g');
@@ -15,7 +23,11 @@ export class FiltersService {
   }
 
   cleanConcordiaMessage(message: string): string {
-    let result = message || '';
+    if (message === undefined) {
+      this.logger.error('Message is undefined');
+      return message;
+    }
+    let result = message;
     // Erase 'cmd=&msg='
     result = result.replace('cmd=&msg=', '');
     // Erase all '&'
@@ -24,6 +36,14 @@ export class FiltersService {
   }
 
   cleanVoicebotMessage(filters: string[], message: string): string {
+    if (message === undefined) {
+      this.logger.error('Message is undefined');
+      return message;
+    }
+    if (filters === undefined) {
+      this.logger.error('Filters is undefined');
+      return message;
+    }
     let result = message;
     const globalFilters = process.env.GLOBAL_FILTERS.split('|') || null;
     if (globalFilters) {
