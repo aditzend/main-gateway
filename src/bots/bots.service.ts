@@ -49,12 +49,10 @@ export class BotsService {
 
     if (voicebotMessage.EventName === '*online') {
       messageForRasa = this.wakeUpIntent;
+    } else if (voicebotMessage.EventName === '*noresponse') {
+      messageForRasa = '*noresponse';
     } else {
-      // filters = voicebotMessage.Parameters?.filter(
-      //   (param) => param.split('=')[0] === 'filter',
-      // ).map((param) => param.split('=')[1]);
-      // this.logger.verbose(`Filters: ${JSON.stringify(filters)}`);
-
+      // EventName is *text and requires a full Message field
       messageForRasa = this.filtersService.cleanVoicebotMessage(
         filters,
         voicebotMessage.Message,
