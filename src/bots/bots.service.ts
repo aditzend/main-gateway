@@ -27,6 +27,7 @@ export class BotsService {
     let messageForRasa = '';
     const filters: string[] = [];
     const transformedParameters: Parameter[] = [];
+    const slots: Slot[] = [];
 
     // If voicebotMessage has Parameters, we need to split them by '=' and turn them into Parameters
     voicebotMessage.Parameters?.forEach((param) => {
@@ -39,11 +40,11 @@ export class BotsService {
         });
     });
 
-    // Tarea should be converted into a Parameter
+    // Tarea should be converted into a Slot
     if (voicebotMessage.Tarea) {
-      transformedParameters.push({
-        parameter_name: 'Tarea',
-        parameter_value: voicebotMessage.Tarea,
+      slots.push({
+        slot_name: 'Tarea',
+        slot_value: voicebotMessage.Tarea,
       });
     }
 
@@ -68,6 +69,7 @@ export class BotsService {
       get_context: false,
       analyze: true,
       parameters: transformedParameters,
+      load_slots: slots,
     };
 
     this.logger.verbose(`Sending message ${JSON.stringify(botRequest)}`);
