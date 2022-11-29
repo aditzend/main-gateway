@@ -66,7 +66,7 @@ export class BotsService {
       channel: voicebotMessage.Channel,
       bot_name: voicebotMessage.BotName?.toLowerCase(),
       upload_outgoing_params: true,
-      get_context: false,
+      get_context: true,
       analyze: true,
       parameters: transformedParameters,
       load_slots: slots,
@@ -79,10 +79,11 @@ export class BotsService {
       .pipe(
         map((res) => res.data),
         map((data: BotResponse) => {
+          const { slots } = data.context;
           const voicebotResponse: VoicebotV1ResponseDto = {
             InteractionId: data?.recipient_id,
             UserName: voicebotMessage.UserName,
-            Parameters: voicebotMessage.Parameters,
+            Parameters: slots,
             Message:
               voicebotMessage.Message === ''
                 ? 'online'

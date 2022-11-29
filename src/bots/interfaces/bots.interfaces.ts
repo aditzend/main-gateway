@@ -18,9 +18,17 @@ export interface BotResponse {
   bot_name: string;
   channel: string;
   events: BotEvent[];
-  context?: object;
+  context?: Context;
   analyze: boolean;
   load_parameters: boolean;
+}
+
+interface Context {
+  slots: object;
+  intent: object;
+  entities: object;
+  rasa_message_id: string;
+  action_name: string;
 }
 
 export interface BotEvent {

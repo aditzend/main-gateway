@@ -3,7 +3,7 @@ export class VoicebotV1ResponseDto {
   InteractionId: string;
   BotName: string;
   EventName: string;
-  Parameters?: string[];
+  Parameters?: object;
   Message?: string;
   UserName?: string;
   Channel?: string;
