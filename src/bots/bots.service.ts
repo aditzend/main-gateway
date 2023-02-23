@@ -52,12 +52,16 @@ export class BotsService {
       messageForRasa = this.wakeUpIntent;
     } else if (voicebotMessage.EventName === '*noresponse') {
       messageForRasa = '*noresponse';
+      // Don't load slots
+      slots.length = 0;
     } else {
       // EventName is *text and requires a full Message field
       messageForRasa = this.filtersService.cleanVoicebotMessage(
         filters,
         voicebotMessage.Message,
       );
+      // Don't load slots
+      slots.length = 0;
     }
 
     const botRequest: BotRequest = {
